@@ -1,0 +1,56 @@
+{{- $globals := ternary .Values.global.prod .Values.global.dev (eq .Values.global.env_name "prod") -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.global.appName }}
+spec:
+  replicas: {{ $globals.instanceCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.global.appName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.global.appName }}
+        ksync: {{ .Values.global.appName }}
+    spec:
+      containers:
+        - name: {{ .Values.global.appName }}
+          image: {{ .Values.werf.image.app }}
+          env:
+{{ include "apps-env-var-values" . | indent 12 }}
+            - name: HOST
+              value: "0"
+            - name: PORT
+              value: "3000"
+          readinessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          ports:
+            - name: http
+              containerPort: 3000
+      imagePullSecrets:
+        - name: docker-registry{{- if ne .Values.global.env_name "prod" }}-dev{{- end}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.global.appName }}
+spec:
+  ports:
+    - port: 3000
+      name: http
+  selector:
+    app: {{ .Values.global.appName }}
+---

@@ -1,0 +1,24 @@
+{{- if ne .Values.global.env_name "prod" }}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: Developers
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: Developers
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: Developers
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: Kube-C4-Developers-APP
+{{- end}}
+---

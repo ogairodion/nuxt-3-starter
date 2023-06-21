@@ -1,0 +1,9 @@
+{{- $globals := ternary .Values.global.prod .Values.global.dev (eq .Values.global.env_name "prod") -}}
+kind: Service
+apiVersion: v1
+metadata:
+  name: syslog-ext
+spec:
+  type: ExternalName
+  externalName: {{ $globals.log.host }}
+---

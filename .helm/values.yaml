@@ -1,0 +1,26 @@
+global:
+  appName: 'synergyacademy-nuxt3'
+  dev:
+    instanceCount: '1'
+
+    log:
+      host: 'syslog2.synergy.ru'
+      port: '12201'
+    apiUrl: "https://ogm-test-3213.c4.syndev.ru/"
+    fbPixel: "XXX"
+    gtm: "WPPNHZD"
+    s3UrlBacket: "https://dev.sys3.ru/synergyacademy-api/"
+
+  prod:
+    instanceCount: '1'
+    log:
+      host: 'syslog.synergy.ru'
+      port: '12201'
+    apiUrl: "https://api.synergyacademy.com/"
+    fbPixel: "XXX"
+    gtm: "WPPNHZD"
+    s3UrlBacket: "https://sys3.ru/synergyacademy-api/"
+
+redirects: []
+
+mirrors: []
